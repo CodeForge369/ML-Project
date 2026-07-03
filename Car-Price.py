@@ -1,5 +1,6 @@
 ﻿"""
 CarPrice AI — Landing Page + Dashboard
+Modern, professional slate/blue redesign.
 Run: streamlit run car_prediction_app.py
 """
 
@@ -16,16 +17,20 @@ from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import PolynomialFeatures, StandardScaler
 from PIL import Image
-import io
-# import base64
 
-# def get_base64(file_path):
-#     with open(file_path, "rb") as f:
-#         return base64.b64encode(f.read()).decode()
-      
-# img_base64 = get_base64("image/Sports Car.jpg")
-      
-      
+
+# ── SCROLL FUNCTION ─────────────────────────────
+
+def scroll_top():
+    st.components.v1.html(
+        """
+        <script>
+        window.parent.scrollTo(0,0);
+        </script>
+        """,
+        height=0,
+    )
+
 # ── PAGE CONFIG ──────────────────────────────────────────────────
 st.set_page_config(
     page_title="CarPrice AI",
@@ -44,53 +49,38 @@ if "uploaded_df" not in st.session_state:
 # ── GLOBAL CSS ───────────────────────────────────────────────────
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
-  --bg:      #03040A;
-  --panel:   #070A14;
-  --surf:    #0A0E1A;
-  --surf2:   #0F1422;
-  --border:  #161E36;
-  --border2: #1F2D50;
-  --accent:  #E63946;
-  --accent2: #FF6B6B;
-  --gold:    #FFD166;
-  --teal:    #06D6A0;
-  --blue:    #118AB2;
-  --purple:  #7B61FF;
-  --txt:     #E8EAF2;
-  --muted:   #3D4668;
-  --muted2:  #5A6690;
-  --fhd:     'Syne', sans-serif;
-  --fbd:     'Inter', sans-serif;
+  --bg:      #F7F8FB;
+  --panel:   #FFFFFF;
+  --surf:    #FFFFFF;
+  --surf2:   #F2F4F8;
+  --border:  #E5E8F0;
+  --border2: #D6DBE6;
+  --accent:  #3D5AFE;
+  --accent2: #2A3FCC;
+  --gold:    #B8842E;
+  --teal:    #16916F;
+  --slate:   #64708A;
+  --txt:     #1A2233;
+  --muted:   #8A93A8;
+  --muted2:  #565F76;
+  --fhd:     'Manrope', -apple-system, 'Segoe UI', system-ui, sans-serif;
+  --fbd:     'Inter', -apple-system, 'Segoe UI', system-ui, sans-serif;
+  --fmono:   'JetBrains Mono', 'Courier New', monospace;
 }
-# /* ── BACKGROUND CAR IMAGE ── */
-# .stApp {
-#   background: 
-#     linear-gradient(rgba(3,4,10,0.92), rgba(3,4,10,0.97)),
-#     url("data:image/jpg;base64,{img_base64}");
-#   background-size: cover;
-#   background-position: center;
-#   background-attachment: fixed;
-# }
-# .stApp::before {
-#   content: "";
-#   position: fixed;
-#   top: 0; left: 0;
-#   width: 100%; height: 100%;
-#   background: radial-gradient(circle at 20% 30%, rgba(230,57,70,0.12), transparent 40%),
-#               radial-gradient(circle at 80% 70%, rgba(6,214,160,0.08), transparent 45%);
-#   pointer-events: none;
-# }
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { color-scheme: light !important; }
 html, body, [class*="css"] {
   font-family: var(--fbd);
   background: var(--bg) !important;
   color: var(--txt);
   -webkit-font-smoothing: antialiased;
 }
-.stApp { background: var(--bg) !important; }
+.stApp { background: var(--bg) !important; color: var(--txt) !important; }
+h1, h2, h3, h4, h5, h6, p, span, label, div { color: inherit; }
 .block-container { padding: 0 !important; max-width: 100% !important; }
 #MainMenu, footer, header,
 [data-testid="collapsedControl"],
@@ -106,222 +96,279 @@ html, body, [class*="css"] {
 .lp-nav {
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 3rem; height: 64px;
-  border-bottom: 1px solid rgba(255,255,255,0.04);
-  background: rgba(3,4,10,0.9);
+  border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,0.9);
   backdrop-filter: blur(12px);
   position: sticky; top: 0; z-index: 99;
 }
-.lp-logo { font-family: var(--fhd); font-size: 1.3rem; font-weight: 800;
-  letter-spacing: 0.08em; text-transform: uppercase; color: #fff; }
+.lp-logo { font-family: var(--fhd); font-size: 1.15rem; font-weight: 800;
+  letter-spacing: -0.01em; color: var(--txt); }
 .lp-logo em { color: var(--accent); font-style: normal; }
 .lp-pill {
-  font-size: 0.6rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
-  background: rgba(230,57,70,0.1); border: 1px solid rgba(230,57,70,0.28);
-  color: var(--accent2); padding: 0.3rem 0.9rem; border-radius: 999px;
+  font-size: 0.62rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+  background: rgba(61,90,254,0.07); border: 1px solid rgba(61,90,254,0.25);
+  color: var(--accent2); padding: 0.32rem 0.85rem; border-radius: 6px;
+  font-family: var(--fmono);
 }
-
 .hero-wrap {
-  padding: 5rem 3rem 3rem;
+  padding: 6rem 3rem 4rem;
   background:
-    radial-gradient(ellipse 70% 55% at 75% -5%, rgba(230,57,70,0.13) 0%, transparent 55%),
-    radial-gradient(ellipse 55% 45% at 5% 95%, rgba(6,214,160,0.07) 0%, transparent 55%);
+    radial-gradient(circle at 80% 20%, rgba(61,90,254,.08), transparent 35%),
+    radial-gradient(circle at 20% 0%, rgba(22,145,111,.06), transparent 30%),
+    var(--bg);
 }
 .hero-tag {
   display: inline-flex; align-items: center; gap: 0.55rem;
-  font-size: 0.65rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase;
-  color: var(--teal); margin-bottom: 1.5rem;
+  font-size: 0.68rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--accent2); margin-bottom: 1.5rem; font-family: var(--fmono);
 }
-.hero-tag::before { content:''; width:18px; height:1px; background:var(--teal); display:block; }
-.hero-h1 {
-  font-family: var(--fhd); font-size: clamp(3rem,5.5vw,5.2rem); font-weight: 800;
-  line-height: 0.94; letter-spacing: -0.03em; color: #fff; margin-bottom: 1.5rem;
+.hero-tag::before { content:''; width:18px; height:1px; background:var(--accent); display:block; }
+.hero-h1, .hero-h1 * {
+  font-family: var(--fhd) !important;
+  font-size: clamp(2.6rem,4.6vw,4.2rem); font-weight: 800 !important;
+  line-height: 1.05; letter-spacing: -0.03em; color: var(--txt) !important; margin-bottom: 1.5rem;
+  max-width: 760px;
 }
-.hero-h1 .gr {
-  display: block;
-  background: linear-gradient(125deg, var(--accent) 0%, var(--gold) 100%);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-}
+.hero-h1 { margin-bottom: 1.5rem; }
+.hero-h1 .gr { color: var(--accent2) !important; }
 .hero-sub {
-  font-size: 1rem; line-height: 1.85; color: rgba(232,234,242,0.55);
-  max-width: 520px; font-weight: 300; margin-bottom: 2.5rem;
+  font-size: 1rem; line-height: 1.85; color: var(--muted2);
+  max-width: 540px; font-weight: 400; margin-bottom: 2.25rem;
 }
 .hero-chips { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 3rem; }
 .hero-chip {
-  display: inline-flex; align-items: center; gap: 0.4rem;
-  font-size: 0.7rem; font-weight: 500; letter-spacing: 0.06em;
-  color: var(--muted2); background: var(--surf); border: 1px solid var(--border);
-  border-radius: 999px; padding: 0.38rem 0.85rem;
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  font-size: 0.7rem; font-weight: 500; letter-spacing: 0.02em;
+  color: var(--muted2); background: var(--surf2); border: 1px solid var(--border);
+  border-radius: 7px; padding: 0.4rem 0.85rem;
 }
-.hero-chip em { width:6px; height:6px; border-radius:50%; display:block; font-style:normal; }
-.hero-chip em.red  { background: var(--accent); }
-.hero-chip em.teal { background: var(--teal); }
-.hero-chip em.gold { background: var(--gold); }
+.hero-chip em { width:5px; height:5px; border-radius:50%; display:block; font-style:normal; background: var(--accent); }
 
 .stat-row {
   display: grid; grid-template-columns: repeat(4,1fr);
   gap: 1px; background: var(--border);
-  border: 1px solid var(--border); border-radius: 16px; overflow: hidden;
-  margin-bottom: 5rem;
+  border: 1px solid var(--border); border-radius: 10px; overflow: hidden;
+  margin-bottom: 3.5rem;
+  box-shadow: 0 1px 3px rgba(26,34,51,0.04);
 }
-.stat-cell { background: var(--surf); padding: 1.6rem 1.4rem; }
-.stat-num { font-family:var(--fhd); font-size:2.4rem; font-weight:800; color:#fff; line-height:1; margin-bottom:0.3rem; }
-.stat-num em { color:var(--accent); font-style:normal; }
-.stat-lbl { font-size:0.65rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); }
+.stat-cell { background: var(--panel); padding: 1.5rem 1.4rem; }
+.stat-num { font-family:var(--fhd); font-size:2.1rem; font-weight:800; color:var(--txt); line-height:1; margin-bottom:0.35rem; }
+.stat-num em { color:var(--accent2); font-style:normal; }
+.stat-lbl { font-size:0.65rem; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; color:var(--muted); }
 
 .how-band {
-  background: var(--surf); border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+  background: var(--panel);
   padding: 4rem 3rem;
+  border-bottom: 1px solid var(--border);
 }
-.band-tag { font-size:0.62rem; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); margin-bottom:0.4rem; }
-.band-h   { font-family:var(--fhd); font-size:1.9rem; font-weight:800; color:#fff; letter-spacing:-0.02em; margin-bottom:2.5rem; }
-.steps { display:grid; grid-template-columns:repeat(4,1fr); gap:1.5rem; position:relative; }
-.steps::before {
-  content:''; position:absolute; top:26px; left:80px; right:80px; height:1px;
-  background: linear-gradient(90deg,transparent,var(--border2),var(--accent),var(--border2),transparent);
-}
-.step { text-align:center; position:relative; z-index:1; }
+.band-tag { font-size:0.64rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--accent2); margin-bottom:0.5rem; font-family: var(--fmono); }
+.band-h   { font-family:var(--fhd); font-size:1.7rem; font-weight:800; color:var(--txt); letter-spacing:-0.02em; margin-bottom:2.5rem; }
+.steps { display:grid; grid-template-columns:repeat(4,1fr); gap:1.5rem; }
+.step { border-left: 2px solid var(--border); padding-left: 1.1rem; }
 .step-n {
-  width:52px; height:52px; border-radius:50%;
-  background:var(--panel); border:2px solid var(--accent);
-  display:flex; align-items:center; justify-content:center; margin:0 auto 1rem;
-  font-family:var(--fhd); font-size:1.1rem; font-weight:800; color:var(--accent);
+  font-family:var(--fmono); font-size:0.72rem; font-weight:500; color:var(--accent2);
+  margin-bottom:0.6rem; letter-spacing: 0.05em;
 }
-.step-h { font-family:var(--fhd); font-size:0.82rem; font-weight:700; letter-spacing:0.06em;
-  text-transform:uppercase; color:#fff; margin-bottom:0.4rem; }
-.step-p { font-size:0.73rem; line-height:1.7; color:var(--muted2); }
+.step-h { font-family:var(--fhd); font-size:0.88rem; font-weight:700;
+  color:var(--txt); margin-bottom:0.45rem; }
+.step-p { font-size:0.78rem; line-height:1.7; color:var(--muted2); }
 
 .feat-band { padding: 4rem 3rem 3rem; }
-.feat-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.25rem; }
+.feat-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.1rem; }
 .feat-card {
-  background:var(--surf); border:1px solid var(--border); border-radius:18px; padding:1.75rem;
-  transition: border-color .25s, transform .25s;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 1px 2px rgba(26,34,51,0.03);
+  transition: all .25s ease;
 }
-.feat-card:hover { border-color:var(--border2); transform:translateY(-3px); }
-.feat-icon { width:44px; height:44px; border-radius:10px; display:flex;
-  align-items:center; justify-content:center; font-size:1.25rem; margin-bottom:1.1rem; }
-.feat-icon.r { background:rgba(230,57,70,0.1); }
-.feat-icon.t { background:rgba(6,214,160,0.08); }
-.feat-icon.g { background:rgba(255,209,102,0.08); }
-.feat-h { font-family:var(--fhd); font-size:1rem; font-weight:700; color:#fff; margin-bottom:0.5rem; }
-.feat-p { font-size:0.78rem; line-height:1.8; color:var(--muted2); font-weight:300; }
+.feat-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(61,90,254,0.35);
+  box-shadow: 0 12px 28px rgba(26,34,51,0.08);
+}
+.feat-icon { width:38px; height:38px; border-radius:8px; display:flex;
+  align-items:center; justify-content:center; font-size:1.05rem; margin-bottom:1.1rem;
+  background: var(--surf2); border: 1px solid var(--border); }
+.feat-h { font-family:var(--fhd); font-size:0.95rem; font-weight:700; color:var(--txt); margin-bottom:0.5rem; }
+.feat-p { font-size:0.8rem; line-height:1.8; color:var(--muted2); font-weight:400; }
 
 .lp-footer {
-  text-align:center; padding:1.75rem 0 1.25rem;
-  font-size:0.6rem; color:var(--border2); letter-spacing:0.14em; text-transform:uppercase;
+  text-align:center; padding:1.75rem 0 1.5rem;
+  font-size:0.65rem; color:var(--muted); letter-spacing:0.06em;
   border-top:1px solid var(--border); margin-top:1rem;
+  font-family: var(--fmono);
 }
 
 /* ════════════════════════════════════
-   DASHBOARD TOPBAR — single bar only
+   DASHBOARD TOPBAR
 ════════════════════════════════════ */
 .dash-nav {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 0 2rem; height: 58px;
-  background: rgba(7,10,20,0.98);
+  padding: 0 2rem; height: 56px;
+  background: var(--panel);
   border-bottom: 1px solid var(--border);
-  backdrop-filter: blur(16px);
 }
-.dash-logo { font-family:var(--fhd); font-size:1.2rem; font-weight:800;
-  letter-spacing:0.08em; text-transform:uppercase; color:#fff; }
-.dash-logo em { color:var(--accent); font-style:normal; }
-.dash-nav-links { display:flex; align-items:center; gap:0.1rem; }
+.dash-logo { font-family:var(--fhd); font-size:1.05rem; font-weight:800;
+  letter-spacing:-0.01em; color:var(--txt); }
+.dash-logo em { color:var(--accent2); font-style:normal; }
+html { scroll-behavior: smooth; }
+.dash-nav-links { display:flex; align-items:center; gap:0.25rem; }
 .dash-nav-link {
-  font-size:0.68rem; font-weight:500; letter-spacing:0.06em; text-transform:uppercase;
-  color:var(--muted); text-decoration:none;
-  padding:0.3rem 0.75rem; border-radius:6px;
+  font-size:0.74rem; font-weight:600; letter-spacing:0.02em;
+  color:var(--muted2); text-decoration:none;
+  padding:0.42rem 0.9rem; border-radius:7px;
+  cursor:pointer; transition: all .18s ease;
+  border: 1px solid transparent;
+}
+.dash-nav-link:hover {
+  color: var(--accent2); background: rgba(61,90,254,0.06);
+}
+.dash-nav-link.active {
+  color: var(--accent2); background: rgba(61,90,254,0.08);
+  border-color: rgba(61,90,254,0.18);
 }
 .dash-badge {
-  font-size:0.6rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
-  background:rgba(6,214,160,0.07); border:1px solid rgba(6,214,160,0.2);
-  color:var(--teal); padding:0.25rem 0.75rem; border-radius:999px;
+  font-size:0.62rem; font-weight:600; letter-spacing:0.04em;
+  background:rgba(22,145,111,0.08); border:1px solid rgba(22,145,111,0.25);
+  color:var(--teal); padding:0.28rem 0.75rem; border-radius:6px;
+  font-family: var(--fmono);
 }
 
-/* ── BACK BUTTON — small, inline, subtle ── */
-.back-btn-wrap {
-  display: inline-flex; align-items: center; gap: 0.35rem;
-  font-size: 0.65rem; font-weight: 500; letter-spacing: 0.06em;
-  color: var(--muted2); text-decoration: none; cursor: pointer;
-  border: 1px solid var(--border2); border-radius: 6px;
-  padding: 0.25rem 0.65rem; background: transparent;
-  transition: border-color .2s, color .2s;
-}
-.back-btn-wrap:hover { color: var(--accent); border-color: rgba(230,57,70,0.4); }
+/* ── BACK BUTTON (uses st.button type="secondary") ── */
 
-/* Override Streamlit button specifically for back button */
-div[data-testid="stButton"].back-home-btn > button {
-  background: transparent !important;
+div[data-testid="stButton"] button[kind="secondary"],
+button[kind="secondary"],
+div[data-testid="stButton"].back-home-btn > button,
+.back-home-btn .stButton > button {
+  background: var(--surf2) !important;
   border: 1px solid var(--border2) !important;
   color: var(--muted2) !important;
   font-family: var(--fbd) !important;
-  font-size: 0.65rem !important;
-  font-weight: 500 !important;
-  letter-spacing: 0.06em !important;
-  text-transform: none !important;
-  padding: 0.22rem 0.7rem !important;
-  border-radius: 6px !important;
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
+  padding: 0.65rem 1.4rem !important;
+  height: auto !important;
+  min-height: 42px !important;
+  border-radius: 10px !important;
   width: auto !important;
-  min-width: unset !important;
   box-shadow: none !important;
-  line-height: 1.4 !important;
+  transition: all .2s ease !important;
 }
-div[data-testid="stButton"].back-home-btn > button:hover {
-  border-color: rgba(230,57,70,0.4) !important;
-  color: var(--accent) !important;
-  transform: none !important;
+
+div[data-testid="stButton"] button[kind="secondary"]:hover,
+button[kind="secondary"]:hover,
+.back-home-btn .stButton > button:hover {
+  border-color: var(--accent) !important;
+  color: var(--accent2) !important;
+  background: rgba(61,90,254,.07) !important;
+  transform: translateX(-2px);
   box-shadow: none !important;
+}
+
+/* ── REAL CONTAINER-BASED SPACING (st.container(key=...)) ── */
+.st-key-left_panel {
+  padding: 1.5rem 1.5rem 2rem 3rem !important;
+}
+.st-key-home_btn, .st-key-home_btn_nd {
+  padding: 1.1rem 0 0.4rem 3rem !important;
 }
 
 /* ── DASHBOARD HEADER BANNER ── */
 .dash-banner {
   padding: 1.4rem 2rem 1.2rem;
-  background: linear-gradient(180deg, rgba(230,57,70,0.04) 0%, transparent 100%);
+  background: var(--bg);
   border-bottom: 1px solid var(--border);
   display: flex; align-items: flex-end; justify-content: space-between;
 }
 .dash-banner-title {
-  font-family:var(--fhd); font-size:1.5rem; font-weight:800;
-  color:#fff; letter-spacing:-0.01em; margin-bottom:0.15rem;
+  font-family:var(--fhd); font-size:1.35rem; font-weight:800;
+  color:var(--txt); letter-spacing:-0.01em; margin-bottom:0.2rem;
 }
-.dash-banner-sub { font-size:0.73rem; color:var(--muted2); font-weight:400; }
+.dash-banner-sub { font-size:0.76rem; color:var(--muted2); font-weight:400; }
 .dash-banner-right { display:flex; gap:0.5rem; }
 .dash-tag {
-  font-size:0.58rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
-  padding:0.25rem 0.65rem; border-radius:6px; border:1px solid;
+  font-size:0.6rem; font-weight:600; letter-spacing:0.03em;
+  padding:0.28rem 0.65rem; border-radius:6px; border:1px solid;
+  font-family: var(--fmono);
 }
-.dash-tag.r { color:var(--accent2); background:rgba(230,57,70,0.08); border-color:rgba(230,57,70,0.2); }
-.dash-tag.t { color:var(--teal);    background:rgba(6,214,160,0.06); border-color:rgba(6,214,160,0.18); }
-.dash-tag.g { color:var(--gold);    background:rgba(255,209,102,0.06); border-color:rgba(255,209,102,0.18); }
+.dash-tag.r { color:var(--accent2); background:rgba(61,90,254,0.06); border-color:rgba(61,90,254,0.2); }
+.dash-tag.t { color:var(--teal);    background:rgba(22,145,111,0.06); border-color:rgba(22,145,111,0.2); }
+.dash-tag.g { color:var(--gold);    background:rgba(184,132,46,0.07); border-color:rgba(184,132,46,0.22); }
 
-/* ── KPI CARDS ── */
-.kpi-row { display:grid; grid-template-columns:repeat(4,1fr); gap:0.85rem; margin-bottom:1.25rem; }
-.kpi {
-  background:var(--surf2); border:1px solid var(--border); border-radius:12px;
-  padding:1.1rem 1.2rem; position:relative; overflow:hidden;
-  transition: border-color .2s;
+/* ── MODERN KPI CARDS ── */
+
+.kpi-row {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:1rem;
+  margin-bottom:1.5rem;
 }
-.kpi:hover { border-color:var(--border2); }
-.kpi::after { content:''; position:absolute; top:0;left:0;right:0;height:2px; }
-.kpi.red::after    { background:linear-gradient(90deg,var(--accent),transparent); }
-.kpi.gold::after   { background:linear-gradient(90deg,var(--gold),transparent); }
-.kpi.teal::after   { background:linear-gradient(90deg,var(--teal),transparent); }
-.kpi.purple::after { background:linear-gradient(90deg,var(--purple),transparent); }
-.kpi-lbl { font-size:0.6rem; font-weight:500; letter-spacing:0.08em; text-transform:uppercase;
-  color:var(--muted); margin-bottom:0.35rem; }
-.kpi-val { font-family:var(--fbd); font-size:1.75rem; font-weight:600; color:#fff; line-height:1; letter-spacing:-0.01em; }
-.kpi-sub { font-size:0.6rem; color:var(--teal); margin-top:0.25rem; font-weight:400; }
+
+.kpi {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius:16px;
+  padding:1.4rem 1.5rem;
+  position:relative;
+  overflow:hidden;
+  box-shadow: 0 1px 2px rgba(26,34,51,0.03);
+  transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+
+/* subtle blue accent glow */
+.kpi::before {
+  content:"";
+  position:absolute;
+  top:-40px; right:-40px;
+  width:90px; height:90px;
+  background: radial-gradient(circle, rgba(61,90,254,.10), transparent 70%);
+}
+
+.kpi:hover {
+  transform: translateY(-4px);
+  border-color: rgba(61,90,254,.3);
+  box-shadow: 0 12px 28px rgba(26,34,51,0.08);
+}
+
+.kpi-lbl {
+  font-size:0.65rem;
+  font-weight:600;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  color: var(--muted);
+  margin-bottom:.7rem;
+}
+
+.kpi-val {
+  font-family:var(--fhd);
+  font-size:2rem;
+  font-weight:800;
+  color: var(--txt);
+  line-height:1;
+  letter-spacing:-0.03em;
+}
+
+.kpi-sub {
+  font-size:.68rem;
+  color: var(--accent2);
+  margin-top:.5rem;
+  font-weight:500;
+}
 
 /* ── LEFT PANEL ── */
 .plbl {
-  font-size:0.6rem; font-weight:600; letter-spacing:0.12em; text-transform:uppercase;
-  color:var(--muted); padding-bottom:0.4rem; border-bottom:1px solid var(--border);
-  margin-bottom:0.7rem;
+  font-size:0.78rem; font-weight:700; letter-spacing:0.04em; text-transform:uppercase;
+  color:var(--muted2); padding-bottom:0.5rem; border-bottom:1px solid var(--border);
+  margin-bottom:0.85rem;
 }
 
 /* ── SECTION HEADER ── */
 .sec {
   display:flex; align-items:center; gap:0.5rem;
-  font-family:var(--fhd); font-size:0.78rem; font-weight:700;
-  letter-spacing:0.08em; text-transform:uppercase; color:var(--txt);
+  font-family:var(--fhd); font-size:0.8rem; font-weight:700;
+  letter-spacing:0.01em; color:var(--txt);
   margin:1.1rem 0 0.75rem;
 }
 .sec::before { content:''; width:3px; height:12px; background:var(--accent);
@@ -329,139 +376,105 @@ div[data-testid="stButton"].back-home-btn > button:hover {
 
 /* ── SCORE BARS ── */
 .sbar { margin-bottom:0.65rem; }
-.sbar-top { display:flex; justify-content:space-between; font-size:0.58rem;
-  color:var(--muted); margin-bottom:0.2rem; letter-spacing:0.04em; text-transform:uppercase; }
+.sbar-top { display:flex; justify-content:space-between; font-size:0.6rem;
+  color:var(--muted); margin-bottom:0.2rem; letter-spacing:0.02em; font-family: var(--fmono); }
 .sbar-track { background:var(--border); border-radius:3px; height:4px; overflow:hidden; }
 .sbar-fill { height:100%; border-radius:3px; }
 
 /* ── PREDICTION BOX ── */
 .pred-box {
-  background: linear-gradient(135deg, #080614, #0A0810 55%, #07090F);
-  border: 1px solid rgba(230,57,70,0.28); border-radius:16px;
+  background: var(--panel);
+  border: 1px solid var(--border); border-radius:12px;
   padding: 1.75rem 1.5rem 1.4rem; text-align:center;
-  box-shadow: 0 0 80px rgba(230,57,70,0.04);
   margin-bottom: 1.25rem;
+  box-shadow: 0 1px 3px rgba(26,34,51,0.04);
 }
-.pred-eye  { font-size:0.58rem; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted); margin-bottom:0.5rem; }
-.pred-amt  { font-family:var(--fhd); font-size:3.8rem; font-weight:800; color:var(--accent); line-height:1;
-  text-shadow: 0 0 50px rgba(230,57,70,0.38); }
-.pred-note { font-size:0.6rem; color:var(--muted); margin-top:0.35rem; font-weight:400; }
+.pred-eye  { font-size:0.62rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); margin-bottom:0.5rem; }
+.pred-amt  { font-family:var(--fhd); font-size:3rem; font-weight:800; color:var(--txt); line-height:1; }
+.pred-note { font-size:0.66rem; color:var(--muted); margin-top:0.4rem; font-weight:400; }
 .pred-row  { display:flex; justify-content:center; gap:2.5rem;
   margin-top:1.1rem; padding-top:1.1rem; border-top:1px solid var(--border); }
-.pred-sub-lbl { font-size:0.55rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); }
-.pred-sub-val { font-family:var(--fhd); font-size:1.4rem; font-weight:700; color:var(--gold); }
+.pred-sub-lbl { font-size:0.58rem; font-weight:500; letter-spacing:0.04em; text-transform:uppercase; color:var(--muted); }
+.pred-sub-val { font-family:var(--fhd); font-size:1.3rem; font-weight:700; color:var(--accent2); }
 
 .pred-empty {
   text-align:center; padding:3rem 1rem; color:var(--muted);
-  background: var(--surf2); border:1px dashed var(--border2); border-radius:16px;
+  background: var(--surf2); border:1px dashed var(--border2); border-radius:12px;
   margin-bottom:1.25rem;
 }
-.pred-empty .eicon { font-size:2.5rem; margin-bottom:0.6rem; }
-.pred-empty p { font-family:var(--fhd); font-size:0.8rem; font-weight:600;
-  letter-spacing:0.06em; text-transform:uppercase; line-height:1.65; }
+.pred-empty .eicon { font-size:2rem; margin-bottom:0.6rem; opacity: 0.6; }
+.pred-empty p { font-family:var(--fhd); font-size:0.82rem; font-weight:600;
+  letter-spacing:0.01em; line-height:1.7; color: var(--muted2); }
 
 /* ── SPEC TABLE ── */
-.spec { width:100%; border-collapse:collapse; font-size:0.77rem; }
-.spec td { padding:0.48rem 0.5rem; border-bottom:1px solid var(--border); color:var(--txt); }
-.spec td:first-child { color:var(--muted); font-size:0.62rem; font-weight:500;
-  letter-spacing:0.08em; text-transform:uppercase; width:46%; }
+.spec { width:100%; border-collapse:collapse; font-size:0.78rem; }
+.spec td { padding:0.5rem 0.5rem; border-bottom:1px solid var(--border); color:var(--txt); }
+.spec td:first-child { color:var(--muted); font-size:0.64rem; font-weight:500;
+  letter-spacing:0.04em; text-transform:uppercase; width:46%; }
 .spec td:last-child { font-weight:500; }
 
 /* ── IMAGE WRAPPER ── */
 .img-wrap {
-  background:var(--surf2); border:1px solid var(--border); border-radius:14px;
-  padding:0.65rem; margin-bottom:0.85rem; box-shadow:0 12px 40px rgba(0,0,0,0.45);
+  background:var(--surf2); border:1px solid var(--border); border-radius:10px;
+  padding:0.65rem; margin-bottom:0.85rem;
 }
 .img-foot {
-  display:flex; justify-content:space-between; padding:0.35rem 0.4rem 0.1rem;
-  font-size:0.7rem; letter-spacing:0.04em; text-transform:uppercase; color:var(--muted);
+  display:flex; justify-content:space-between; padding:0.4rem 0.4rem 0.1rem;
+  font-size:0.7rem; letter-spacing:0.01em; color:var(--muted2);
 }
 
 /* ── STREAMLIT OVERRIDES ── */
 [data-testid="stSlider"] label {
-  font-size:0.64rem !important; font-weight:500 !important;
-  letter-spacing:0.08em !important; text-transform:uppercase !important; color:var(--muted) !important;
+  font-size:0.66rem !important; font-weight:500 !important;
+  letter-spacing:0.04em !important; text-transform:uppercase !important; color:var(--muted) !important;
 }
 [data-testid="stSlider"] > div > div { background:var(--border) !important; }
 [data-testid="stSlider"] > div > div > div > div { background:var(--accent) !important; }
 
-.stRadio label { font-size:0.7rem !important; color:var(--muted2) !important; letter-spacing:0.03em !important; font-weight:400 !important; }
-.stRadio > div { gap:0.3rem !important; }
+.stRadio label,
+.stRadio label p,
+.stRadio label span,
+[data-testid="stRadio"] label,
+[data-testid="stRadio"] label p,
+[data-testid="stRadio"] label span,
+[data-testid="stRadio"] div[role="radiogroup"] label {
+  color: var(--muted2) !important;
+  font-size: 0.85rem !important;
+  letter-spacing: 0.01em !important;
+  font-weight: 500 !important;
+  opacity: 1 !important;
+}
+.stRadio > div,
+[data-testid="stRadio"] > div { gap: 0.3rem !important; }
+
+[data-testid="stWidgetLabel"] p,
+[data-testid="stWidgetLabel"] label {
+  color: var(--muted) !important;
+}
 
 [data-testid="stFileUploader"] {
   border:1px dashed var(--border2) !important;
-  border-radius:10px !important; background:var(--surf2) !important;
+  border-radius:8px !important; background:var(--surf2) !important;
 }
 [data-testid="stFileUploader"] label {
-  font-size:0.64rem !important; font-weight:500 !important;
-  letter-spacing:0.08em !important; text-transform:uppercase !important; color:var(--muted) !important;
-}
-
-/* Primary action button (Predict) - scoped to predict container */
-.predict-btn-wrap .stButton > button {
-  width:100% !important;
-  background:linear-gradient(135deg, var(--accent), #9E1520) !important;
-  color:#fff !important; border:none !important; border-radius:10px !important;
-  font-family:var(--fbd) !important; font-size:0.85rem !important; font-weight:600 !important;
-  letter-spacing:0.06em !important; text-transform:none !important;
-  padding:0.72rem !important; box-shadow:0 4px 18px rgba(230,57,70,0.3) !important;
-  transition:all .2s !important;
-}
-.predict-btn-wrap .stButton > button:hover {
-  box-shadow:0 6px 28px rgba(230,57,70,0.52) !important; transform:translateY(-1px) !important;
-}
-/* Launch button on landing */
-.launch-btn-wrap .stButton > button {
-  width:100% !important;
-  background:linear-gradient(135deg, var(--accent), #9E1520) !important;
-  color:#fff !important; border:none !important; border-radius:10px !important;
-  font-family:var(--fbd) !important; font-size:0.85rem !important; font-weight:600 !important;
-  letter-spacing:0.06em !important; text-transform:none !important;
-  padding:0.72rem !important; box-shadow:0 4px 18px rgba(230,57,70,0.3) !important;
-  transition:all .2s !important;
-}
-.launch-btn-wrap .stButton > button:hover {
-  box-shadow:0 6px 28px rgba(230,57,70,0.52) !important; transform:translateY(-1px) !important;
-}
-/* Back home — tiny ghost button, embedded in navbar */
-.back-home-btn .stButton > button {
-  background: transparent !important;
-  border: 1px solid var(--border2) !important;
-  color: var(--muted2) !important;
-  font-family: var(--fbd) !important;
-  font-size: 0.62rem !important;
-  font-weight: 500 !important;
-  letter-spacing: 0.04em !important;
-  text-transform: none !important;
-  padding: 0.18rem 0.55rem !important;
-  border-radius: 5px !important;
-  width: auto !important;
-  min-width: unset !important;
-  height: auto !important;
-  line-height: 1.5 !important;
-  box-shadow: none !important;
-}
-.back-home-btn .stButton > button:hover {
-  border-color: rgba(230,57,70,0.35) !important;
-  color: var(--accent2) !important;
-  transform: none !important;
-  box-shadow: none !important;
+  font-size:0.66rem !important; font-weight:500 !important;
+  letter-spacing:0.04em !important; text-transform:uppercase !important; color:var(--muted) !important;
 }
 
 /* Tabs */
 [data-baseweb="tab-list"] {
-  background:var(--surf2) !important; border-radius:10px 10px 0 0 !important;
+  background:var(--surf2) !important; border-radius:8px 8px 0 0 !important;
   border:1px solid var(--border) !important; border-bottom:none !important; gap:0 !important; padding:0 !important;
 }
 [data-baseweb="tab"] {
-  font-family:var(--fbd) !important; font-size:0.72rem !important; font-weight:500 !important;
-  letter-spacing:0.06em !important; text-transform:uppercase !important;
+  font-family:var(--fbd) !important; font-size:0.74rem !important; font-weight:500 !important;
+  letter-spacing:0.01em !important;
   color:var(--muted) !important; padding:0.65rem 1.2rem !important; border:none !important;
 }
-[aria-selected="true"] { color:var(--accent) !important; border-bottom:2px solid var(--accent) !important; }
+[aria-selected="true"] { color:var(--accent2) !important; border-bottom:2px solid var(--accent) !important; }
 [data-baseweb="tab-panel"] {
-  background:var(--surf2) !important; border:1px solid var(--border) !important;
-  border-top:none !important; border-radius:0 0 10px 10px !important; padding:1.4rem !important;
+  background:var(--panel) !important; border:1px solid var(--border) !important;
+  border-top:none !important; border-radius:0 0 8px 8px !important; padding:1.4rem !important;
 }
 
 hr { border-color:var(--border) !important; }
@@ -469,30 +482,48 @@ hr { border-color:var(--border) !important; }
 /* Upload success notice */
 .upload-success {
   display:flex; align-items:center; gap:0.5rem;
-  background:rgba(6,214,160,0.06); border:1px solid rgba(6,214,160,0.2);
-  border-radius:8px; padding:0.5rem 0.75rem; margin-top:0.5rem;
-  font-size:0.65rem; color:var(--teal); font-weight:500; letter-spacing:0.04em;
+  background:rgba(22,145,111,0.06); border:1px solid rgba(22,145,111,0.2);
+  border-radius:7px; padding:0.5rem 0.75rem; margin-top:0.5rem;
+  font-size:0.66rem; color:var(--teal); font-weight:500; letter-spacing:0.01em;
 }
 
-/* GLOBAL GLOW BUTTON FIX */
+/* Generic button styling — clean, professional, no glow */
 div[data-testid="stButton"] > button {
-  position: relative !important;
-  border-radius: 12px !important;
-  background: linear-gradient(135deg, #E63946, #9E1520) !important;
-  color: white !important;
-  font-weight: 600 !important;
-
-  box-shadow: 0 0 12px rgba(230,57,70,0.4),
-              0 0 30px rgba(230,57,70,0.2) !important;
-
-  transition: 0.25s ease-in-out !important;
+    width: 100% !important;
+    height: 52px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: linear-gradient(135deg, #3D5AFE, #5B76FF) !important;
+    color: #FFFFFF !important;
+    border: none !important;
+    border-radius: 12px !important;
+    font-size: 0.9rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.02em !important;
+    box-shadow: 0 6px 18px rgba(61,90,254,0.22);
+    transition: all .25s ease !important;
 }
 
-/* hover glow */
 div[data-testid="stButton"] > button:hover {
-  transform: translateY(-2px) scale(1.02) !important;
-  box-shadow: 0 0 18px rgba(230,57,70,0.7),
-              0 0 60px rgba(230,57,70,0.35) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 10px 26px rgba(61,90,254,0.32);
+}
+
+.predict-btn-wrap .stButton > button,
+div[data-testid="stButton"] .predict-btn-wrap button {
+  width:100% !important;
+  padding:0.75rem 1.25rem !important;
+  font-size:0.9rem !important;
+  height:52px !important;
+  letter-spacing: 0.02em !important;
+}
+
+.launch-btn-wrap .stButton > button {
+  width:100% !important;
+  padding:0.9rem 1.5rem !important;
+  font-size:0.9rem !important;
+  height:56px !important;
 }
 
 </style>
@@ -580,26 +611,23 @@ def train_model_from_df(df_key: str, _df: pd.DataFrame):
 # ══════════════════════════════════════════════════════════════════
 def render_landing():
 
-    # NAV
     st.markdown("""
     <div class="lp-nav">
       <div class="lp-logo">Car<em>Price</em>&nbsp;AI</div>
       <div style="display:flex;align-items:center;gap:2.2rem;">
-        <a href="#" style="font-size:0.7rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted2);text-decoration:none;">Features</a>
-        <a href="#" style="font-size:0.7rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted2);text-decoration:none;">How it works</a>
-        <a href="#" style="font-size:0.7rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted2);text-decoration:none;">Docs</a>
+        <a href="#" style="font-size:0.72rem;font-weight:500;color:var(--muted2);text-decoration:none;">Features</a>
+        <a href="#" style="font-size:0.72rem;font-weight:500;color:var(--muted2);text-decoration:none;">How it works</a>
+        <a href="#" style="font-size:0.72rem;font-weight:500;color:var(--muted2);text-decoration:none;">Docs</a>
       </div>
-      <div class="lp-pill">⚡ ML Engine Active</div>
+      <div class="lp-pill">● Model Ready</div>
     </div>
     """, unsafe_allow_html=True)
 
-    # HERO
     st.markdown("""
     <div class="hero-wrap">
       <div class="hero-tag">Automotive Intelligence Platform</div>
       <h1 class="hero-h1">
-        Predict any car's
-        <span class="gr">market value instantly.</span>
+        Predict any car's <span class="gr">market value instantly.</span>
       </h1>
       <p class="hero-sub">
         Harness dual-model machine learning — Linear Regression paired with Polynomial
@@ -607,16 +635,15 @@ def render_landing():
         instant AI-powered price estimates in seconds.
       </p>
       <div class="hero-chips">
-        <span class="hero-chip"><em class="red"></em> Dual ML Models</span>
-        <span class="hero-chip"><em class="teal"></em> Real-Time Predictions</span>
-        <span class="hero-chip"><em class="gold"></em> Deep Analytics</span>
-        <span class="hero-chip"><em class="teal"></em> Correlation Heatmaps</span>
-        <span class="hero-chip"><em class="red"></em> 8 Predictive Features</span>
+        <span class="hero-chip"><em></em> Dual ML Models</span>
+        <span class="hero-chip"><em></em> Real-Time Predictions</span>
+        <span class="hero-chip"><em></em> Deep Analytics</span>
+        <span class="hero-chip"><em></em> Correlation Heatmaps</span>
+        <span class="hero-chip"><em></em> 8 Predictive Features</span>
       </div>
     </div>
     """, unsafe_allow_html=True)
 
-    # STATS
     st.markdown("""
     <div style="padding:0 3rem;">
     <div class="stat-row">
@@ -640,29 +667,28 @@ def render_landing():
     </div>
     """, unsafe_allow_html=True)
 
-    # HOW IT WORKS
     st.markdown("""
     <div class="how-band">
       <div class="band-tag">Process</div>
       <div class="band-h">How it works</div>
       <div class="steps">
         <div class="step">
-          <div class="step-n">01</div>
+          <div class="step-n">01 — Upload</div>
           <div class="step-h">Upload Dataset</div>
-          <p class="step-p">Upload your CSV file with MSRP, engine specs, weight, body type and origin directly in the app.</p>
+          <p class="step-p">Upload a CSV with MSRP, engine specs, weight, body type and origin directly in the app.</p>
         </div>
         <div class="step">
-          <div class="step-n">02</div>
+          <div class="step-n">02 — Train</div>
           <div class="step-h">Train Models</div>
           <p class="step-p">Both Linear and Polynomial Regression models train instantly on your data with an 80/20 split.</p>
         </div>
         <div class="step">
-          <div class="step-n">03</div>
+          <div class="step-n">03 — Configure</div>
           <div class="step-h">Configure Specs</div>
           <p class="step-p">Tune engine size, horsepower, weight, body type and market origin from the control panel.</p>
         </div>
         <div class="step">
-          <div class="step-n">04</div>
+          <div class="step-n">04 — Predict</div>
           <div class="step-h">Get Prediction</div>
           <p class="step-p">Receive an ensemble price estimate with agreement score, price range and full analytics.</p>
         </div>
@@ -670,24 +696,23 @@ def render_landing():
     </div>
     """, unsafe_allow_html=True)
 
-    # FEATURES
     st.markdown("""
     <div class="feat-band">
       <div class="band-tag">Capabilities</div>
       <div class="band-h">Everything you need</div>
       <div class="feat-grid">
         <div class="feat-card">
-          <div class="feat-icon r">🤖</div>
+          <div class="feat-icon">🤖</div>
           <div class="feat-h">Dual-Model Ensemble</div>
           <p class="feat-p">Linear Regression for baseline accuracy. Polynomial Regression captures non-linear price relationships. Both averaged for optimal estimates.</p>
         </div>
         <div class="feat-card">
-          <div class="feat-icon t">📊</div>
+          <div class="feat-icon">📊</div>
           <div class="feat-h">Deep Analytics</div>
           <p class="feat-p">Explore MSRP distributions, price by body type, feature pair plots and full Pearson correlation heatmaps for any uploaded dataset.</p>
         </div>
         <div class="feat-card">
-          <div class="feat-icon g">⚡</div>
+          <div class="feat-icon">⚡</div>
           <div class="feat-h">Instant Predictions</div>
           <p class="feat-p">Sub-second price estimates with model agreement scores, confidence ranges and visual vehicle previews by body type.</p>
         </div>
@@ -695,38 +720,46 @@ def render_landing():
     </div>
     """, unsafe_allow_html=True)
 
-    # ── LAUNCH SECTION (no upload — upload lives in dashboard) ───
     csv_path = None
     if os.path.exists("Cars Data.csv"):
         csv_path = "Cars Data.csv"
 
     st.markdown("<br>", unsafe_allow_html=True)
-    _, c, _ = st.columns([2.5, 2, 2.5])
+    _, c, _ = st.columns([2.8, 2, 2])
     with c:
-        st.markdown('<div class="glow-btn">', unsafe_allow_html=True)
-        if st.button("🚀  Launch Dashboard", key="launch_btn"):
+        st.markdown('<div class="launch-btn-wrap">', unsafe_allow_html=True)
+        if st.button("Launch Dashboard →", key="launch_btn"):
             if csv_path:
                 st.session_state.csv_path = csv_path
                 st.session_state.uploaded_df = None
                 st.session_state.page = "dashboard"
+                scroll_top()
                 st.rerun()
             elif st.session_state.uploaded_df is not None:
                 st.session_state.csv_path = None
                 st.session_state.page = "dashboard"
+                scroll_top()
                 st.rerun()
             else:
                 st.session_state.page = "dashboard"
+                scroll_top()
                 st.rerun()
         st.markdown('</div>', unsafe_allow_html=True)
     st.markdown("""
-    <div style="text-align:center;margin-top:0.6rem;font-size:0.68rem;color:var(--muted);letter-spacing:0.04em;">
-      You can upload your dataset inside the dashboard
-    </div>
-    """, unsafe_allow_html=True)
+      <div style="
+      text-align:center;
+      margin-top:20px;
+      font-size:0.75rem;
+      color:var(--muted);
+      ">
+      Powered by Machine Learning • Linear Regression • Polynomial Regression
+      </div>
+      """,
+    unsafe_allow_html=True)
 
     st.markdown("""
     <div class="lp-footer">
-      CarPrice AI &nbsp;·&nbsp; Linear &amp; Polynomial Regression &nbsp;·&nbsp; Built with Streamlit &amp; scikit-learn
+      CarPrice AI · Linear &amp; Polynomial Regression · Built with Streamlit &amp; scikit-learn
     </div>
     """, unsafe_allow_html=True)
 
@@ -735,34 +768,32 @@ def render_landing():
 #  DASHBOARD
 # ══════════════════════════════════════════════════════════════════
 def render_dashboard():
+    scroll_top()
     csv_path = st.session_state.get("csv_path")
     uploaded_df = st.session_state.get("uploaded_df")
 
     has_data = csv_path or (uploaded_df is not None)
 
     if not has_data:
-        # Show navbar + upload-only state
         st.markdown("""
         <div class="dash-nav">
           <div class="dash-logo">Car<em>Price</em>&nbsp;AI</div>
-          <div class="dash-badge">⚠ No Dataset</div>
+          <div class="dash-badge">No Dataset</div>
         </div>
         """, unsafe_allow_html=True)
-        back_c, _ = st.columns([0.08, 0.92])
-        with back_c:
-            st.markdown('<div class="glow-btn" style="padding:0.35rem 0 0 0.75rem;">', unsafe_allow_html=True)
-            if st.button("← Home", key="back_home_nd"):
+        with st.container(key="home_btn_nd"):
+            if st.button("← Home", key="back_home_nd", type="secondary"):
                 st.session_state.page = "landing"
                 st.rerun()
-            st.markdown('</div>', unsafe_allow_html=True)
         st.markdown("""
         <div style="max-width:480px;margin:3rem auto;text-align:center;padding:2.5rem;
-                    background:var(--surf2);border:1px dashed var(--border2);border-radius:16px;">
-          <div style="font-size:2rem;margin-bottom:0.75rem;">📂</div>
-          <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:#fff;margin-bottom:0.4rem;">
+                    background:var(--panel);border:1px dashed var(--border2);border-radius:12px;
+                    box-shadow:0 1px 3px rgba(26,34,51,0.04);">
+          <div style="font-size:1.8rem;margin-bottom:0.75rem;opacity:0.6;">📂</div>
+          <div style="font-family:'Manrope',sans-serif;font-size:1rem;font-weight:700;color:var(--txt);margin-bottom:0.4rem;">
             Upload a dataset to continue
           </div>
-          <div style="font-size:0.72rem;color:var(--muted2);line-height:1.7;">
+          <div style="font-size:0.74rem;color:var(--muted2);line-height:1.7;">
             Drop a CSV with MSRP, Type, Origin,<br>EngineSize, Horsepower, Weight columns.
           </div>
         </div>
@@ -795,40 +826,32 @@ def render_dashboard():
     n_types   = df_raw["Type"].nunique()   if "Type"   in df_raw.columns else "—"
     n_origins = df_raw["Origin"].nunique() if "Origin" in df_raw.columns else "—"
 
-    # ── SINGLE TOPBAR with inline back button ──────────────────────
-    # Render navbar HTML (back btn sits in right side via Streamlit column trick)
     st.markdown(f"""
     <div class="dash-nav">
       <div class="dash-logo">Car<em>Price</em>&nbsp;AI</div>
       <div class="dash-nav-links">
-        <a class="dash-nav-link" href="#">Dashboard</a>
-        <a class="dash-nav-link" href="#">Models</a>
-        <a class="dash-nav-link" href="#">Analytics</a>
+        <a class="dash-nav-link active" href="#dash-top">Dashboard</a>
+        <a class="dash-nav-link" href="#model-accuracy">Models</a>
+        <a class="dash-nav-link" href="#analytics-tabs">Analytics</a>
       </div>
       <div style="display:flex;align-items:center;gap:0.85rem;">
-        <span style="font-size:0.62rem;color:var(--muted);font-weight:400;">{df_raw.shape[0]:,} records</span>
+        <span style="font-size:0.64rem;color:var(--muted);font-family:var(--fmono);">{df_raw.shape[0]:,} records</span>
         <div class="dash-badge">● Models Active</div>
       </div>
     </div>
+    <div id="dash-top"></div>
     """, unsafe_allow_html=True)
-    # Back button row — rendered below navbar, left-aligned, tiny
-    back_col, _ = st.columns([0.08, 0.92])
-    with back_col:
-        st.markdown('<div class="glow-btn" style="padding:0.35rem 0 0 0.75rem;">', unsafe_allow_html=True)
-        if st.button("← Home", key="back_home"):
+    with st.container(key="home_btn"):
+        if st.button("← Home", key="back_home", type="secondary"):
             st.session_state.page = "landing"
             st.rerun()
-        st.markdown('</div>', unsafe_allow_html=True)
 
-    # ── DASHBOARD BANNER ─────────────────────────────────────────
     st.markdown(f"""
     <div class="dash-banner">
       <div class="dash-banner-left">
         <div class="dash-banner-title">Vehicle Price Intelligence</div>
         <div class="dash-banner-sub">
-          {df_raw.shape[0]:,} vehicles &nbsp;·&nbsp;
-          {len(feats)} features &nbsp;·&nbsp;
-          Poly R² {scores['pr_test']:.1f}%
+          {df_raw.shape[0]:,} vehicles · {len(feats)} features · Poly R² {scores['pr_test']:.1f}%
         </div>
       </div>
       <div class="dash-banner-right">
@@ -839,12 +862,10 @@ def render_dashboard():
     </div>
     """, unsafe_allow_html=True)
 
-    # ── TWO-COLUMN LAYOUT ─────────────────────────────────────────
-    left_col, main_col = st.columns([1, 3.2], gap="small")
+    left_col, main_col = st.columns([1, 3.2], gap="large")
 
-    # LEFT PANEL
     with left_col:
-        st.markdown('<div style="padding:1rem 0.6rem;">', unsafe_allow_html=True)
+      with st.container(key="left_panel"):
 
         st.markdown('<div class="plbl">Engine & Performance</div>', unsafe_allow_html=True)
         engine_size = st.slider("Engine Size (L)", 1.0, 8.0, 3.0, 0.1)
@@ -864,30 +885,30 @@ def render_dashboard():
         origin_usa    = int(origin == "USA")
 
         st.markdown("<br>", unsafe_allow_html=True)
-        st.markdown('<div class="glow-btn">', unsafe_allow_html=True)
-        predict_btn = st.button("⚡  Predict Price")
+        st.markdown('<div class="predict-btn-wrap">', unsafe_allow_html=True)
+        predict_btn = st.button("Predict Price")
         st.markdown('</div>', unsafe_allow_html=True)
 
-        st.markdown('<br><div class="plbl">Model Accuracy</div>', unsafe_allow_html=True)
+        st.markdown('<br><div class="plbl" id="model-accuracy">Model Accuracy</div>', unsafe_allow_html=True)
         for lbl, val, clr in [
-            ("LR Train",   scores["lr_train"],  "#E63946"),
-            ("LR Test",    scores["lr_test"],   "#FF6B6B"),
-            ("Poly Train", scores["pr_train"],  "#06D6A0"),
-            ("Poly Test",  scores["pr_test"],   "#06D6A0"),
+            ("LR Train",   scores["lr_train"],  "#3D5AFE"),
+            ("LR Test",    scores["lr_test"],   "#5B76FF"),
+            ("Poly Train", scores["pr_train"],  "#16916F"),
+            ("Poly Test",  scores["pr_test"],   "#16916F"),
         ]:
             st.markdown(f"""
             <div class="sbar">
               <div class="sbar-top"><span>{lbl}</span><span>{val:.1f}%</span></div>
               <div class="sbar-track">
                 <div class="sbar-fill" style="width:{min(val,100):.1f}%;
-                  background:linear-gradient(90deg,{clr},transparent);"></div>
+                  background:{clr};"></div>
               </div>
             </div>
             """, unsafe_allow_html=True)
 
         st.markdown('<br><div class="plbl">Dataset</div>', unsafe_allow_html=True)
 
-        with st.expander("📂  Upload / Replace Dataset", expanded=(uploaded_df is None and not csv_path)):
+        with st.expander("Upload / Replace Dataset", expanded=(uploaded_df is None and not csv_path)):
             new_file = st.file_uploader(
                 "Drop CSV here",
                 type=None,
@@ -924,16 +945,18 @@ def render_dashboard():
             </div>""", unsafe_allow_html=True)
         elif csv_path:
             st.markdown(f"""
-            <div style="font-size:0.6rem;color:var(--muted);margin-top:0.3rem;padding:0.35rem 0.5rem;
-                        background:var(--surf2);border:1px solid var(--border);border-radius:6px;">
-              📁 Cars Data.csv
+            <div style="font-size:0.62rem;color:var(--muted);margin-top:0.3rem;padding:0.4rem 0.5rem;
+                        background:var(--surf2);border:1px solid var(--border);border-radius:6px;
+                        font-family:var(--fmono);">
+              Cars Data.csv
             </div>""", unsafe_allow_html=True)
 
-        st.markdown("</div>", unsafe_allow_html=True)
 
-    # MAIN AREA
-    DARK   = "#070A14"
-    BORDER = "#161E36"
+
+    LIGHT_BG = "#FFFFFF"
+    LIGHT_BORDER = "#E5E8F0"
+    TXT_DARK = "#1A2233"
+    TXT_MUTED = "#64708A"
     car_images = {
         "Sedan":  "image/Sedan Car.jpg",
         "Sports": "image/Sports Car.jpg",
@@ -943,25 +966,24 @@ def render_dashboard():
     with main_col:
         st.markdown('<div style="padding:1rem 1rem 0;">', unsafe_allow_html=True)
 
-        # KPI Row
         st.markdown(f"""
         <div class="kpi-row">
-          <div class="kpi red">
+          <div class="kpi">
             <div class="kpi-lbl">Avg Market Price</div>
             <div class="kpi-val">${avg_msrp/1000:.1f}K</div>
             <div class="kpi-sub">across {df_raw.shape[0]:,} vehicles</div>
           </div>
-          <div class="kpi gold">
+          <div class="kpi">
             <div class="kpi-lbl">Highest MSRP</div>
             <div class="kpi-val">${max_msrp/1000:.0f}K</div>
             <div class="kpi-sub">dataset peak</div>
           </div>
-          <div class="kpi teal">
+          <div class="kpi">
             <div class="kpi-lbl">Body Types</div>
             <div class="kpi-val">{n_types}</div>
             <div class="kpi-sub">distinct categories</div>
           </div>
-          <div class="kpi purple">
+          <div class="kpi">
             <div class="kpi-lbl">Origins</div>
             <div class="kpi-val">{n_origins}</div>
             <div class="kpi-sub">USA · Europe · Asia</div>
@@ -969,9 +991,9 @@ def render_dashboard():
         </div>
         """, unsafe_allow_html=True)
 
-        tab1, tab2, tab3 = st.tabs(["🎯  Prediction", "📊  Analytics", "🔥  Correlation"])
+        st.markdown('<div id="analytics-tabs"></div>', unsafe_allow_html=True)
+        tab1, tab2, tab3 = st.tabs(["Prediction", "Analytics", "Correlation"])
 
-        # ── TAB 1 ──────────────────────────────────────
         with tab1:
             if predict_btn:
                 row = {k: [0] for k in feats}
@@ -999,8 +1021,8 @@ def render_dashboard():
                         st.image(Image.open(img_path), use_container_width=True)
                         st.markdown(f"""
                         <div class="img-foot">
-                          <span>Class: <strong style="color:#fff;">{car_type}</strong></span>
-                          <span style="color:var(--accent);">●
+                          <span>Class: <strong style="color:var(--txt);">{car_type}</strong></span>
+                          <span style="color:var(--accent2);">●
                             <span style="color:var(--txt);margin-left:3px;">{origin}</span>
                           </span>
                         </div>
@@ -1008,13 +1030,13 @@ def render_dashboard():
                     else:
                         st.markdown(f"""
                         <div style="background:var(--surf2);border:1px dashed var(--border2);
-                                    border-radius:14px;padding:2.5rem 1rem;text-align:center;
+                                    border-radius:10px;padding:2.5rem 1rem;text-align:center;
                                     color:var(--muted);margin-bottom:0.85rem;">
-                          <div style="font-size:1.4rem;">🚗</div>
-                          <p style="font-size:0.72rem;margin-top:0.5rem;color:var(--muted2);font-weight:500;">
+                          <div style="font-size:1.3rem;opacity:0.5;">🚗</div>
+                          <p style="font-size:0.74rem;margin-top:0.5rem;color:var(--muted2);font-weight:500;">
                             {car_type} · {origin}
                           </p>
-                          <p style="font-size:0.62rem;margin-top:0.25rem;color:var(--muted);">
+                          <p style="font-size:0.64rem;margin-top:0.25rem;color:var(--muted);">
                             Add image/ folder for preview
                           </p>
                         </div>""", unsafe_allow_html=True)
@@ -1053,9 +1075,9 @@ def render_dashboard():
 
                     diff_pct  = abs(lr_pred - pr_pred) / max(avg_pred, 1) * 100
                     agreement = max(0, 100 - diff_pct * 2)
-                    agree_clr = ("#06D6A0" if agreement >= 70
-                                 else "#FFD166" if agreement >= 40
-                                 else "#E63946")
+                    agree_clr = ("#16916F" if agreement >= 70
+                                 else "#B8842E" if agreement >= 40
+                                 else "#C7466B")
 
                     ag_col, rng_col = st.columns(2, gap="medium")
                     with ag_col:
@@ -1064,10 +1086,10 @@ def render_dashboard():
                         <div style="margin-bottom:0.4rem;">
                           <div style="background:var(--border);border-radius:4px;height:8px;overflow:hidden;margin-bottom:0.4rem;">
                             <div style="height:100%;width:{agreement:.0f}%;border-radius:4px;
-                                        background:linear-gradient(90deg,{agree_clr},transparent);"></div>
+                                        background:{agree_clr};"></div>
                           </div>
-                          <div style="font-size:0.62rem;color:var(--muted);letter-spacing:0.06em;">
-                            Agreement: <strong style="color:#E8EAF2;">{agreement:.0f}%</strong>
+                          <div style="font-size:0.64rem;color:var(--muted);">
+                            Agreement: <strong style="color:var(--txt);">{agreement:.0f}%</strong>
                             &nbsp;·&nbsp; Spread: <strong style="color:var(--gold);">${abs(lr_pred-pr_pred):,.0f}</strong>
                           </div>
                         </div>
@@ -1078,16 +1100,15 @@ def render_dashboard():
                         lo = min(lr_pred, pr_pred)
                         hi = max(lr_pred, pr_pred)
                         st.markdown(f"""
-                        <div style="background:var(--panel);border:1px solid var(--border);
-                                    border-radius:10px;padding:0.75rem 0.9rem;">
-                          <div style="font-size:0.58rem;color:var(--muted);letter-spacing:0.1em;
-                                      text-transform:uppercase;margin-bottom:0.3rem;">Low → High Estimate</div>
-                          <div style="font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;color:#E8EAF2;">
+                        <div style="background:var(--surf2);border:1px solid var(--border);
+                                    border-radius:8px;padding:0.75rem 0.9rem;">
+                          <div style="font-size:0.6rem;color:var(--muted);text-transform:uppercase;margin-bottom:0.3rem;">Low → High Estimate</div>
+                          <div style="font-family:'Manrope',sans-serif;font-size:1.05rem;font-weight:700;color:var(--txt);">
                             ${lo:,.0f}
                             <span style="color:var(--muted);font-weight:300;font-size:0.8rem;"> → </span>
                             ${hi:,.0f}
                           </div>
-                          <div style="font-size:0.58rem;color:var(--muted2);margin-top:0.3rem;">
+                          <div style="font-size:0.6rem;color:var(--muted2);margin-top:0.3rem;">
                             Spread: ${hi-lo:,.0f}
                           </div>
                         </div>
@@ -1097,37 +1118,36 @@ def render_dashboard():
                 <div class="pred-empty">
                   <div class="eicon">🚘</div>
                   <p>Configure specs in the left panel<br>
-                     and click <span style="color:#E63946;">⚡ Predict Price</span></p>
+                     and click <span style="color:var(--accent2);">Predict Price</span></p>
                 </div>
                 """, unsafe_allow_html=True)
 
-        # ── TAB 2 ANALYTICS ────────────────────────────
         with tab2:
             st.markdown('<div class="sec">Price Distribution</div>', unsafe_allow_html=True)
-            fig, axes = plt.subplots(1, 2, figsize=(11, 3.8), facecolor=DARK)
+            fig, axes = plt.subplots(1, 2, figsize=(11, 3.8), facecolor=LIGHT_BG)
             for ax in axes:
-                ax.set_facecolor(DARK)
-                for sp in ax.spines.values(): sp.set_edgecolor(BORDER)
-                ax.tick_params(colors="#3D4668", labelsize=8)
+                ax.set_facecolor(LIGHT_BG)
+                for sp in ax.spines.values(): sp.set_edgecolor(LIGHT_BORDER)
+                ax.tick_params(colors=TXT_MUTED, labelsize=8)
 
             msrp_vals = df_raw["MSRP"].astype(float)
-            axes[0].hist(msrp_vals, bins=45, color="#E63946", alpha=0.82, edgecolor=DARK, linewidth=0.3)
-            axes[0].set_title("MSRP Distribution", color="#E8EAF2", fontsize=10, pad=10)
-            axes[0].set_xlabel("Price ($)", color="#3D4668", fontsize=8)
-            axes[0].set_ylabel("Vehicles",  color="#3D4668", fontsize=8)
+            axes[0].hist(msrp_vals, bins=45, color="#3D5AFE", alpha=0.85, edgecolor=LIGHT_BG, linewidth=0.3)
+            axes[0].set_title("MSRP Distribution", color=TXT_DARK, fontsize=10, pad=10)
+            axes[0].set_xlabel("Price ($)", color=TXT_MUTED, fontsize=8)
+            axes[0].set_ylabel("Vehicles",  color=TXT_MUTED, fontsize=8)
             axes[0].xaxis.set_major_formatter(mtick.FuncFormatter(lambda x,_: f"${x/1000:.0f}K"))
-            axes[0].axvline(msrp_vals.mean(), color="#FFD166", linewidth=1.2, linestyle="--", alpha=0.75)
+            axes[0].axvline(msrp_vals.mean(), color="#B8842E", linewidth=1.2, linestyle="--", alpha=0.85)
 
             if "Type" in df_raw.columns:
                 tdata   = df_raw.groupby("Type")["MSRP"].mean().sort_values()
-                palette = ["#E63946","#FF6B6B","#FFD166","#06D6A0","#118AB2"][:len(tdata)]
-                bars    = axes[1].barh(tdata.index, tdata.values, color=palette, alpha=0.88)
-                axes[1].set_title("Avg Price by Body Type", color="#E8EAF2", fontsize=10, pad=10)
-                axes[1].set_xlabel("Avg MSRP ($)", color="#3D4668", fontsize=8)
+                palette = ["#3D5AFE","#5B76FF","#16916F","#B8842E","#8A93A8"][:len(tdata)]
+                bars    = axes[1].barh(tdata.index, tdata.values, color=palette, alpha=0.9)
+                axes[1].set_title("Avg Price by Body Type", color=TXT_DARK, fontsize=10, pad=10)
+                axes[1].set_xlabel("Avg MSRP ($)", color=TXT_MUTED, fontsize=8)
                 axes[1].xaxis.set_major_formatter(mtick.FuncFormatter(lambda x,_: f"${x/1000:.0f}K"))
                 for bar, val in zip(bars, tdata.values):
                     axes[1].text(val+200, bar.get_y()+bar.get_height()/2,
-                                 f"${val/1000:.1f}K", va="center", color="#E8EAF2", fontsize=7.5)
+                                 f"${val/1000:.1f}K", va="center", color=TXT_DARK, fontsize=7.5)
 
             plt.tight_layout(pad=1.5)
             st.pyplot(fig, use_container_width=True)
@@ -1138,36 +1158,35 @@ def render_dashboard():
             pp = sns.pairplot(
                 df_m[num_cols].sample(min(300,len(df_m)), random_state=1),
                 height=1.9, aspect=1,
-                plot_kws={"alpha":0.42,"color":"#E63946","s":8,"edgecolors":"none"},
-                diag_kws={"color":"#FFD166","alpha":0.7,"bins":20},
+                plot_kws={"alpha":0.45,"color":"#3D5AFE","s":8,"edgecolors":"none"},
+                diag_kws={"color":"#B8842E","alpha":0.7,"bins":20},
             )
-            pp.figure.patch.set_facecolor(DARK)
+            pp.figure.patch.set_facecolor(LIGHT_BG)
             for ax in pp.axes.flat:
-                ax.set_facecolor(DARK)
-                ax.tick_params(colors="#3D4668", labelsize=7)
-                ax.xaxis.label.set_color("#3D4668")
-                ax.yaxis.label.set_color("#3D4668")
-                for sp in ax.spines.values(): sp.set_edgecolor(BORDER)
+                ax.set_facecolor(LIGHT_BG)
+                ax.tick_params(colors=TXT_MUTED, labelsize=7)
+                ax.xaxis.label.set_color(TXT_MUTED)
+                ax.yaxis.label.set_color(TXT_MUTED)
+                for sp in ax.spines.values(): sp.set_edgecolor(LIGHT_BORDER)
             st.pyplot(pp.figure, use_container_width=True)
             plt.close()
 
-        # ── TAB 3 CORRELATION ──────────────────────────
         with tab3:
             st.markdown('<div class="sec">Feature Correlation Matrix</div>', unsafe_allow_html=True)
             corr = df_m.corr()
-            fig2, ax2 = plt.subplots(figsize=(10, 6.5), facecolor=DARK)
-            ax2.set_facecolor(DARK)
+            fig2, ax2 = plt.subplots(figsize=(10, 6.5), facecolor=LIGHT_BG)
+            ax2.set_facecolor(LIGHT_BG)
             mask = np.triu(np.ones_like(corr, dtype=bool))
-            cmap = sns.diverging_palette(5, 210, s=90, l=40, as_cmap=True)
+            cmap = sns.diverging_palette(220, 20, s=75, l=50, as_cmap=True)
             sns.heatmap(corr, mask=mask, annot=True, fmt=".2f", cmap=cmap,
-                        linewidths=0.5, linecolor="#03040A",
-                        annot_kws={"size":8,"color":"#E8EAF2","weight":"600"},
+                        linewidths=0.5, linecolor=LIGHT_BG,
+                        annot_kws={"size":8,"color":TXT_DARK,"weight":"600"},
                         ax=ax2, cbar_kws={"shrink":0.75,"pad":0.02}, vmin=-1, vmax=1)
-            ax2.tick_params(colors="#5A6690", labelsize=8)
+            ax2.tick_params(colors=TXT_MUTED, labelsize=8)
             ax2.set_xticklabels(ax2.get_xticklabels(), rotation=35, ha="right")
             ax2.set_yticklabels(ax2.get_yticklabels(), fontsize=8)
-            ax2.figure.axes[-1].tick_params(colors="#3D4668", labelsize=7)
-            plt.title("Pearson Correlation — All Features", color="#E8EAF2", fontsize=11, pad=14, loc="left")
+            ax2.figure.axes[-1].tick_params(colors=TXT_MUTED, labelsize=7)
+            plt.title("Pearson Correlation — All Features", color=TXT_DARK, fontsize=11, pad=14, loc="left")
             plt.tight_layout()
             st.pyplot(fig2, use_container_width=True)
             plt.close(fig2)
@@ -1175,19 +1194,19 @@ def render_dashboard():
             st.markdown('<div class="sec">MSRP Feature Impact</div>', unsafe_allow_html=True)
             if "MSRP" in corr.columns:
                 msrp_c = corr["MSRP"].drop("MSRP").sort_values()
-                colors  = ["#118AB2" if v < 0 else "#E63946" for v in msrp_c.values]
-                fig3, ax3 = plt.subplots(figsize=(9, 3.5), facecolor=DARK)
-                ax3.set_facecolor(DARK)
-                for sp in ax3.spines.values(): sp.set_edgecolor(BORDER)
-                ax3.barh(msrp_c.index, msrp_c.values, color=colors, alpha=0.85, height=0.52)
-                ax3.axvline(0, color="#161E36", linewidth=1)
-                ax3.tick_params(colors="#5A6690", labelsize=8)
-                ax3.set_xlabel("Correlation Coefficient", color="#3D4668", fontsize=8)
-                ax3.set_title("Correlation with MSRP", color="#E8EAF2", fontsize=10, pad=10, loc="left")
+                colors  = ["#8A93A8" if v < 0 else "#3D5AFE" for v in msrp_c.values]
+                fig3, ax3 = plt.subplots(figsize=(9, 3.5), facecolor=LIGHT_BG)
+                ax3.set_facecolor(LIGHT_BG)
+                for sp in ax3.spines.values(): sp.set_edgecolor(LIGHT_BORDER)
+                ax3.barh(msrp_c.index, msrp_c.values, color=colors, alpha=0.9, height=0.52)
+                ax3.axvline(0, color=LIGHT_BORDER, linewidth=1)
+                ax3.tick_params(colors=TXT_MUTED, labelsize=8)
+                ax3.set_xlabel("Correlation Coefficient", color=TXT_MUTED, fontsize=8)
+                ax3.set_title("Correlation with MSRP", color=TXT_DARK, fontsize=10, pad=10, loc="left")
                 for i, (val, _) in enumerate(zip(msrp_c.values, msrp_c.index)):
                     ax3.text(val+(0.01 if val>=0 else -0.01), i, f"{val:+.2f}",
                              va="center", ha="left" if val>=0 else "right",
-                             color="#E8EAF2", fontsize=7.5, fontweight="600")
+                             color=TXT_DARK, fontsize=7.5, fontweight="600")
                 plt.tight_layout()
                 st.pyplot(fig3, use_container_width=True)
                 plt.close(fig3)
@@ -1195,10 +1214,10 @@ def render_dashboard():
         st.markdown("</div>", unsafe_allow_html=True)
 
     st.markdown("""
-    <div style="text-align:center;padding:1.5rem 0 0.75rem;font-size:0.58rem;
-                color:var(--border2);letter-spacing:0.1em;text-transform:uppercase;
-                border-top:1px solid var(--border);margin-top:1rem;">
-      CarPrice AI &nbsp;·&nbsp; Linear &amp; Polynomial Regression &nbsp;·&nbsp; Streamlit &amp; scikit-learn
+    <div style="text-align:center;padding:1.5rem 0 0.75rem;font-size:0.62rem;
+                color:var(--muted);
+                border-top:1px solid var(--border);margin-top:1rem;font-family:var(--fmono);">
+      CarPrice AI · Linear &amp; Polynomial Regression · Streamlit &amp; scikit-learn
     </div>
     """, unsafe_allow_html=True)
 
